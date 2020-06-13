@@ -6,6 +6,23 @@ services:
 
 before_install:
   - docker build -t hitunes247/docker-react -f Dockerfile.dev .
-
+# run test and pass when it exit with 0
 script:
   - docker run -e CI=true hitunes247/docker-react npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-central-1"
+  # elastic app name
+  app: "docker-react"
+  # elastic env name
+  env: "DockerReact-env"
+  # s3 bucketname
+  bucket_name: "elasticbeanstalk-eu-central-1-186464856964"
+  # appname
+  bucket_path: "docker-react"
+  on:
+    branch: master
+  # save env variable key on travis
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
